@@ -8,8 +8,21 @@
 
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+        <PackageReference Include="Hangfire" Version="1.8.23"/>
+        <PackageReference Include="HotChocolate.AspNetCore" Version="16.4.0-p.14"/>
+        <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="16.4.0-p.14"/>
+        <PackageReference Include="HotChocolate.Data" Version="16.4.0-p.14"/>
+        <PackageReference Include="HotChocolate.Utilities" Version="16.4.0-p.14"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.28" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.28"/>
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
+        <PackageReference Include="OpenTelemetry.Exporter.Console" Version="1.16.0"/>
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.16.0"/>
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.16.0"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.16.0"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.16.0-beta.1"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.16.0"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" Version="1.15.1"/>
         <PackageReference Include="Riok.Mapperly" Version="5.0.0-next.8" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>

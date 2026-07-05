@@ -1,19 +1,11 @@
-using System;
 using CRM_B.Domain.Aggregates.Users.Enums;
-using CRM_B.Domain.Primitives;
+using CRM_B.Domain.Aggregates.Users.Identifiers;
 using CRM_B.Domain.ValueObjects;
 
 namespace CRM_B.Domain.Aggregates.Users.Entities;
 
-public sealed class User : BaseEntity
+public sealed class User
 {
-    public Email Email { get; private set; }
-    public string PasswordHash { get; private set; }
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
-
-    public Role Role { get; private set; } = Role.User;
-
     private User()
     {
     }
@@ -25,4 +17,15 @@ public sealed class User : BaseEntity
         FirstName = firstName;
         LastName = lastName;
     }
+
+    public UserId Id { get; private set; }
+    public Email Email { get; private set; }
+    public string PasswordHash { get; private set; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
+
+    public UserRole Role { get; private set; } = UserRole.User;
+
+    public DateTime CreatedAt { get; private set; } = new DateTime();
+    public DateTime UpdatedAt { get; set; } = new DateTime();
 }

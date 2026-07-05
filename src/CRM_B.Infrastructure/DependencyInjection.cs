@@ -1,7 +1,7 @@
-﻿using CRM_B.Application.Abstractions.Authentication;
-using CRM_B.Application.Abstractions.Persistence;
-using CRM_B.Infrastructure.Authentication;
+﻿using CRM_B.Application.Abstractions.Persistence;
+using CRM_B.Application.Abstractions.Security;
 using CRM_B.Infrastructure.Persistence.Data;
+using CRM_B.Infrastructure.Security.Jwt;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +12,10 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.Configure<JwtSettings>(options =>
+        services.Configure<JwtOptions>(options =>
             configuration.GetSection("JwtSettings").Bind(options));
 
-        services.AddSingleton<IJwtProvider, JwtProvider>();
+        services.AddSingleton<IJwtService, JwtService>();
 
         services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("Default")));

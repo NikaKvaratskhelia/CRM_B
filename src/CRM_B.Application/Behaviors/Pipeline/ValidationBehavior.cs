@@ -1,37 +1,31 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using CRM_B.Application.Behaviors.Internal;
+using CRM_B.Domain.Kernel.Results.Errors;
 using FluentValidation;
 using MediatR;
 
 namespace CRM_B.Application.Behaviors.Pipeline;
 
-public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+    where TRequest : class, IRequest<TResponse>
 {
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
-        CancellationToken ct)
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken)
     {
-        if (!validators.Any())
-            return await next();
+        if (!validators.Any()) return await next();
 
         var context = new ValidationContext<TRequest>(request);
-        var validationResults = await Task.WhenAll(
-            validators.Select(v => v.ValidateAsync(context, ct))
-        );
+        var results = await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, cancellationToken)));
+        var failures = results.SelectMany(r => r.Errors).Where(f => f is not null).ToList();
 
-        var failures = validationResults
-            .SelectMany(r => r.Errors)
-            .Where(f => f != null)
-            .ToList();
+        if (failures.Count == 0) return await next();
 
-        if (failures.Count < 0)
-        {
-            throw new ValidationException(failures);
-        }
+        var errors = failures
+            .GroupBy(f => string.IsNullOrWhiteSpace(f.PropertyName) ? "General" : f.PropertyName)
+            .ToDictionary(g => g.Key, g => g.Select(f => f.ErrorMessage).ToArray());
 
-        return await next();
+        return ValidationFailureFactory<TResponse>.Create(ErrorResults.Validation(errors));
     }
 }

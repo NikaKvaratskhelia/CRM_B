@@ -12,7 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Behaviors\internal\" />
       <Folder Include="Features\Users\" />
     </ItemGroup>
 

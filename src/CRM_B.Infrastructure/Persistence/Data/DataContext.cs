@@ -1,11 +1,13 @@
 using CRM_B.Application.Abstractions.Persistence;
 using CRM_B.Domain.Aggregates.Users.Entities;
+using CRM_B.Infrastructure.Persistence.Idempotency.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CRM_B.Infrastructure.Persistence.Data;
 
 public class DataContext(DbContextOptions<DataContext> options) : DbContext(options), IDataContext
 {
+    public DbSet<IdempotencyKey> IdempotencyKeys => Set<IdempotencyKey>();
     public DbSet<User> Users => Set<User>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -14,10 +16,8 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
 
         modelBuilder.Entity<User>(builder =>
         {
-            builder.OwnsOne(u => u.Email, emailBuilder =>
-            {
-                emailBuilder.Property(e => e.Value).HasColumnName("Email").IsRequired();
-            });
+            builder.OwnsOne(u => u.Email,
+                emailBuilder => { emailBuilder.Property(e => e.Value).HasColumnName("Email").IsRequired(); });
         });
 
         base.OnModelCreating(modelBuilder);
