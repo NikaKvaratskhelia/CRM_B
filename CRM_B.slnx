@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <File Path="src\.gitignore" />
+    <Project Path="src/CRM_B.Api/CRM_B.Api.csproj" />
+    <Project Path="src/CRM_B.Application/CRM_B.Application.csproj" />
+    <Project Path="src/CRM_B.Domain/CRM_B.Domain.csproj" />
+    <Project Path="src/CRM_B.Infrastructure/CRM_B.Infrastructure.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,8 @@
+# Build outputs
+bin/
+obj/
+
+# JetBrains Rider
+.idea/
+.rider/
+*.nuget.info
