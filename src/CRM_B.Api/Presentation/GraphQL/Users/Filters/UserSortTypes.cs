@@ -9,7 +9,7 @@ public sealed class UserSortType : SortInputType<User>
     {
         descriptor.BindFieldsExplicitly();
 
-        descriptor.Field(x => x.FirstName);
+        descriptor.Field(x => x.FullName);
         descriptor.Field(x => x.CreatedAt);
     }
 }

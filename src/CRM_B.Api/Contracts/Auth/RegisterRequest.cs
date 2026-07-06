@@ -6,8 +6,7 @@ namespace CRM_B.Api.Contracts.Auth;
 public sealed record RegisterRequest(
     string Email,
     string Password,
-    string FirstName,
-    string LastName);
+    string FullName);
 
 [Mapper]
 public static partial class RegisterMapper

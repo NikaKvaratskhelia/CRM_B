@@ -5,6 +5,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.23"/>
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.21.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.10"/>
@@ -14,6 +16,12 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Hangfire.Core">
+            <HintPath>..\..\..\..\.nuget\packages\hangfire.core\1.8.23\lib\netstandard2.0\Hangfire.Core.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <PropertyGroup>

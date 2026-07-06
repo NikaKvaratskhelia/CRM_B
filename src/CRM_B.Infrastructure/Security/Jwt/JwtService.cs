@@ -17,7 +17,7 @@ public sealed class JwtService(JwtOptions settings, TimeProvider time) : IJwtSer
         {
             new(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-            new(JwtRegisteredClaimNames.Name, user.FirstName),
+            new(JwtRegisteredClaimNames.Name, user.FullName),
             new(JwtRegisteredClaimNames.Email, user.Email.Value),
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new(ClaimTypes.Role, user.Role.ToString()),

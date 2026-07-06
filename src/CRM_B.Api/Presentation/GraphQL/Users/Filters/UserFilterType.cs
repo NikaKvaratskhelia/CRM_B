@@ -9,7 +9,7 @@ public sealed class UserFilterType : FilterInputType<User>
     {
         descriptor.BindFieldsExplicitly();
 
-        descriptor.Field(x => x.FirstName);
+        descriptor.Field(x => x.FullName);
         descriptor.Field(x => x.Email);
         descriptor.Field(x => x.Role);
     }

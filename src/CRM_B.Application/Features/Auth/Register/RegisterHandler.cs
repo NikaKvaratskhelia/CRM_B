@@ -1,34 +1,24 @@
 using CRM_B.Application.Abstractions.Messaging;
 using CRM_B.Application.Abstractions.Persistence;
+using CRM_B.Application.Abstractions.Security;
+using CRM_B.Domain.Aggregates.Auth.Enums;
 using CRM_B.Domain.Aggregates.Users.Entities;
-using CRM_B.Domain.Aggregates.Users.Identifiers;
-using CRM_B.Domain.ValueObjects;
-using Microsoft.EntityFrameworkCore;
+using CRM_B.Domain.Kernel.Results;
+using CRM_B.Domain.Kernel.Results.Extensions;
 
 namespace CRM_B.Application.Features.Auth.Register;
 
-internal sealed class RegisterHandler(IDataContext dbContext, IUnitOfWork unitOfWork)
-    : ICommandHandler<RegisterCommand, UserId>
+public sealed class RegisterHandler(IDataContext db, IPasswordHasher hasher, TimeProvider time)
+    : ICommandHandler<RegisterCommand>
 {
-    public async Task<UserId> Handle(RegisterCommand request, CancellationToken cancellationToken)
+    public Task<Result> Handle(RegisterCommand req, CancellationToken ct)
     {
-        if (await dbContext.Users.AnyAsync(u => u.Email.Value == request.Email, cancellationToken))
-        {
-            throw new Exception("იუზერი ამ ელ-ფოსტით უკვე არსებობს");
-        }
+        var now = time.GetUtcNow().UtcDateTime;
 
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-        var user = new User(
-            new Email(request.Email),
-            passwordHash,
-            request.FirstName,
-            request.LastName
-        );
-
-        dbContext.Users.Add(user);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-
-        return user.Id;
+        return Task.FromResult(
+            User.Create(req.FullName, req.Email, hasher.Hash(req.Password))
+                .Tap(u => u.CreateVerification(VerificationType.Email, now))
+                .Tap(u => db.Users.Add(u))
+                .ToResult());
     }
 }
