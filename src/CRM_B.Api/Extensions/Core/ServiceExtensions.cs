@@ -54,7 +54,7 @@ public static class ServicesExtensions
         services.AddApiVersioning(o =>
             {
                 o.DefaultApiVersion = new ApiVersion(1, 0);
-                o.AssumeDefaultVersionWhenUnspecified = false;
+                o.AssumeDefaultVersionWhenUnspecified = true;
                 o.ReportApiVersions = true;
             })
             .AddMvc();
