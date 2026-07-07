@@ -1,0 +1,40 @@
+@model VS_ARC.Application.Emails.Auth.EmailVerificationEmailModel
+
+<h2 style="color: #1a1a2e; margin: 0 0 16px; font-size: 20px;">Verify your email address</h2>
+
+<p style="color: #51545e; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">
+    Hi @Model.FullName,
+</p>
+
+<p style="color: #51545e; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">
+    Thank you for registering! Please use the verification code below to confirm your email address.
+</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 32px;">
+    <tr>
+        <td align="center">
+            <div style="background-color: #f4f4f7; border-radius: 8px; padding: 20px 32px; display: inline-block; letter-spacing: 6px; font-size: 32px; font-weight: 700; color: #1a1a2e;">
+                @Model.Otp
+            </div>
+        </td>
+    </tr>
+</table>
+
+<p style="color: #51545e; font-size: 16px; line-height: 1.6; margin: 0 0 24px;">
+    Or click the button below to verify directly:
+</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin: 0 0 32px;">
+    <tr>
+        <td align="center">
+            <a href="@Model.VerificationUrl"
+               style="background-color: #1a1a2e; color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 6px; font-size: 16px; font-weight: 600; display: inline-block;">
+                Verify Email
+            </a>
+        </td>
+    </tr>
+</table>
+
+<p style="color: #8e8ea0; font-size: 14px; line-height: 1.6; margin: 0;">
+    This code expires in 15 minutes. If you did not create an account, please ignore this email.
+</p>

@@ -17,65 +17,317 @@ namespace CRM_B.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.23")
+                .HasAnnotation("ProductVersion", "8.0.28")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CRM_B.Domain.Aggregates.Users.Entities.User", b =>
+            modelBuilder.Entity("CRM_B.Domain.Aggregates.Auth.Entities.RefreshToken", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
 
-                    b.Property<string>("FirstName")
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasColumnType("text")
+                        .HasColumnName("replaced_by_token");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_at");
+
+                    b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("token");
 
-                    b.Property<string>("LastName")
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_refresh_tokens");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_refresh_tokens_user_id");
+
+                    b.ToTable("refresh_tokens", (string)null);
+                });
+
+            modelBuilder.Entity("CRM_B.Domain.Aggregates.Auth.Entities.Verification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("Otp")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("otp");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("Token")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasColumnType("text")
+                        .HasColumnName("token");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("integer");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("type");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
 
-                    b.HasKey("Id");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
 
-                    b.ToTable("Users");
+                    b.HasKey("Id")
+                        .HasName("pk_verifications");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_verifications_user_id");
+
+                    b.ToTable("verifications", (string)null);
                 });
 
             modelBuilder.Entity("CRM_B.Domain.Aggregates.Users.Entities.User", b =>
                 {
-                    b.OwnsOne("CRM_B.Domain.ValueObjects.Email", "Email", b1 =>
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("AuthProvider")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("auth_provider");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("ExternalId")
+                        .HasColumnType("text")
+                        .HasColumnName("external_id");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("full_name");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_verified");
+
+                    b.Property<string>("Language")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("language");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("role");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.ToTable("users", (string)null);
+                });
+
+            modelBuilder.Entity("CRM_B.Infrastructure.Persistence.Idempotency.Entities.IdempotencyKey", b =>
+                {
+                    b.Property<string>("Key")
+                        .HasMaxLength(450)
+                        .HasColumnType("character varying(450)")
+                        .HasColumnName("key");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at");
+
+                    b.Property<string>("RequestHash")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("request_hash");
+
+                    b.Property<string>("ResponsePayload")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("response_payload");
+
+                    b.HasKey("Key")
+                        .HasName("pk_idempotency_keys");
+
+                    b.ToTable("idempotency_keys", (string)null);
+                });
+
+            modelBuilder.Entity("CRM_B.Infrastructure.Persistence.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("correlation_id");
+
+                    b.Property<string>("Error")
+                        .HasColumnType("text")
+                        .HasColumnName("error");
+
+                    b.Property<DateTime>("OccurredOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_on");
+
+                    b.Property<string>("Payload")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("payload");
+
+                    b.Property<DateTime?>("ProcessedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_on");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("retry_count");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id")
+                        .HasName("pk_outbox_messages");
+
+                    b.ToTable("outbox_messages", (string)null);
+                });
+
+            modelBuilder.Entity("CRM_B.Domain.Aggregates.Auth.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("CRM_B.Domain.Aggregates.Users.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_refresh_tokens_users_user_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CRM_B.Domain.Aggregates.Auth.Entities.Verification", b =>
+                {
+                    b.HasOne("CRM_B.Domain.Aggregates.Users.Entities.User", "User")
+                        .WithMany("Verifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_verifications_users_user_id");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CRM_B.Domain.Aggregates.Users.Entities.User", b =>
+                {
+                    b.OwnsOne("CRM_B.Domain.Aggregates.Users.ValueObjects.AccountLockout", "Lockout", b1 =>
                         {
                             b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<int>("FailedAttempts")
+                                .HasColumnType("integer")
+                                .HasColumnName("LockoutFailedAttempts");
+
+                            b1.Property<DateTime?>("LastLoginAt")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("LockoutLastLoginAt");
+
+                            b1.Property<DateTime?>("LockedUntil")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("LockoutLockedUntil");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_users_users_id");
+                        });
+
+                    b.OwnsOne("CRM_B.Domain.Aggregates.Users.ValueObjects.Email", "Email", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
 
                             b1.Property<string>("Value")
                                 .IsRequired()
-                                .HasColumnType("text")
+                                .HasMaxLength(255)
+                                .HasColumnType("character varying(255)")
                                 .HasColumnName("Email");
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("Users");
+                            b1.HasIndex("Value")
+                                .IsUnique()
+                                .HasDatabaseName("ix_users_email");
+
+                            b1.ToTable("users");
 
                             b1.WithOwner()
-                                .HasForeignKey("UserId");
+                                .HasForeignKey("UserId")
+                                .HasConstraintName("fk_users_users_id");
                         });
 
                     b.Navigation("Email")
                         .IsRequired();
+
+                    b.Navigation("Lockout")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CRM_B.Domain.Aggregates.Users.Entities.User", b =>
+                {
+                    b.Navigation("Verifications");
                 });
 #pragma warning restore 612, 618
         }

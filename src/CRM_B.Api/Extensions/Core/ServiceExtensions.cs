@@ -16,7 +16,6 @@ using CRM_B.Application.Abstractions.Observability;
 using CRM_B.Application.Options;
 using CRM_B.Infrastructure;
 using Path = System.IO.Path;
-using ProblemDetailsFactory = Microsoft.AspNetCore.Mvc.Infrastructure.ProblemDetailsFactory;
 
 namespace CRM_B.Api.Extensions.Core;
 

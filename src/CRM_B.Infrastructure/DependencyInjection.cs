@@ -1,8 +1,10 @@
-﻿using CRM_B.Application.Abstractions.Persistence;
-using CRM_B.Application.Abstractions.Security;
-using CRM_B.Infrastructure.Persistence.Data;
-using CRM_B.Infrastructure.Security.Jwt;
-using Microsoft.EntityFrameworkCore;
+﻿using CRM_B.Application.Options;
+using CRM_B.Infrastructure.Email;
+using CRM_B.Infrastructure.Jobs;
+using CRM_B.Infrastructure.Localization;
+using CRM_B.Infrastructure.Persistence;
+using CRM_B.Infrastructure.Persistence.Idempotency;
+using CRM_B.Infrastructure.Security;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,19 +12,14 @@ namespace CRM_B.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
-        services.Configure<JwtOptions>(options =>
-            configuration.GetSection("JwtSettings").Bind(options));
+        services.AddOptions<ClientOptions>()
+            .Bind(config.GetSection(ClientOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
 
-        services.AddSingleton<IJwtService, JwtService>();
-
-        services.AddDbContext<DataContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("Default")));
-
-        services.AddScoped<IDataContext>(sp => sp.GetRequiredService<DataContext>());
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        return services;
+        return services.AddJobs(config).AddPersistence(config).AddSecurity(config)
+            .AddEmail(config).AddAppLocalization().AddIdempotency(config);
     }
 }

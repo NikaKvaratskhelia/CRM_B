@@ -1,4 +1,4 @@
-using CRM_B.Application.Abstractions.Idempotency;
+﻿using CRM_B.Application.Abstractions.Idempotency;
 using CRM_B.Application.Abstractions.Messaging;
 
 namespace CRM_B.Application.Features.Auth.Register;

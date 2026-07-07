@@ -1,30 +1,23 @@
-using CRM_B.Application;
-using CRM_B.Infrastructure;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using CRM_B.Api.Extensions.Core;
+using CRM_B.Infrastructure.Localization;
 
+// AddCoreServices registers (in order): Application + Infrastructure DI, options, MVC + filters,
+// GraphQL, HttpContext-bound services (ICurrentUser, ICorrelationContext, IIdempotencyKeyAccessor),
+// JWT auth + authorization policies, rate limiting, CORS, API versioning, OpenTelemetry,
+// health checks, Swagger.
+// UseCoreApplication composes the pipeline:
+//   Swagger (dev) -> CorrelationId -> CORS -> Localization -> Exception handling -> HSTS/HTTPS
+//   -> JWT auth -> Rate limiter -> Hangfire dashboard -> Health checks -> Controllers -> GraphQL.
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddControllers();
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddCoreServices(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
-app.MapControllers();
+app.Services.VerifyErrorResources();
 
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
+app.UseCoreApplication();
 
 app.Run();
+
+public partial class Program;

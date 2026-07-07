@@ -1,4 +1,5 @@
 using CRM_B.Domain.Aggregates.Auth.Identifiers;
+using CRM_B.Domain.Aggregates.Users.Enums;
 using CRM_B.Domain.Aggregates.Users.Identifiers;
 using CRM_B.Domain.Kernel.Events;
 
@@ -12,5 +13,6 @@ public sealed record EmailVerificationRequestedEvent(
     VerificationId VerificationId,
     string Otp,
     string Token,
-    DateTime ExpiresAt
+    DateTime ExpiresAt,
+    Language Language
 ) : DomainEvent;

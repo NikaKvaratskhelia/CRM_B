@@ -1,6 +1,8 @@
 using CRM_B.Infrastructure.Email.Sender;
 using CRM_B.Infrastructure.Persistence.Data;
 using Hangfire;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
@@ -15,7 +17,7 @@ public static class HealthCheckExtensions
         services.AddHealthChecks()
             .AddDbContextCheck<DataContext>(name: "database", tags: [ReadyTag])
             .AddCheck<HangfireHealthCheck>(name: "hangfire", tags: [ReadyTag])
-            .AddCheck<SendGridHealthCheck>(name: "email", tags: [ReadyTag]);
+            .AddCheck<MailKitHealthCheck>(name: "email", tags: [ReadyTag]); // Updated name here
 
         return services;
     }
@@ -47,11 +49,33 @@ internal sealed class HangfireHealthCheck : IHealthCheck
     }
 }
 
-internal sealed class SendGridHealthCheck(IOptions<SendGridOptions> options) : IHealthCheck
+internal sealed class MailKitHealthCheck(IOptions<MailKitOptions> options) : IHealthCheck
 {
-    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
-        CancellationToken cancellationToken = default) =>
-        Task.FromResult(string.IsNullOrWhiteSpace(options.Value.Key)
-            ? HealthCheckResult.Unhealthy("SendGrid API key is not configured")
-            : HealthCheckResult.Healthy());
+    private readonly MailKitOptions _options = options.Value;
+
+    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(_options.Host) || _options.Port == 0)
+        {
+            return HealthCheckResult.Unhealthy("MailKit SMTP Host or Port is not configured.");
+        }
+
+        try
+        {
+            using var client = new SmtpClient();
+            var secureSocket = _options.Port == 465 ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.StartTls;
+
+            client.Timeout = 5000;
+            await client.ConnectAsync(_options.Host, _options.Port, secureSocket, cancellationToken);
+            await client.DisconnectAsync(true, cancellationToken);
+
+            return HealthCheckResult.Healthy("SMTP server is reachable.");
+        }
+        catch (Exception ex)
+        {
+            return HealthCheckResult.Unhealthy($"Failed to connect to SMTP server at {_options.Host}:{_options.Port}",
+                ex);
+        }
+    }
 }

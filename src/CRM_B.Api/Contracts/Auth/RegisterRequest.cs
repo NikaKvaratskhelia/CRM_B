@@ -3,10 +3,7 @@ using Riok.Mapperly.Abstractions;
 
 namespace CRM_B.Api.Contracts.Auth;
 
-public sealed record RegisterRequest(
-    string Email,
-    string Password,
-    string FullName);
+public sealed record RegisterRequest(string FullName, string Email, string Password);
 
 [Mapper]
 public static partial class RegisterMapper

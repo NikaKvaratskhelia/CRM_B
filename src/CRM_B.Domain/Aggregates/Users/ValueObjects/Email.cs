@@ -1,27 +1,24 @@
 using CRM_B.Domain.Kernel.Guards;
+using CRM_B.Domain.Kernel.Models;
 using CRM_B.Domain.Kernel.Results;
 using CRM_B.Domain.Kernel.Results.Errors;
 using CRM_B.Domain.Kernel.Results.Extensions;
 
-namespace CRM_B.Domain.ValueObjects;
+namespace CRM_B.Domain.Aggregates.Users.ValueObjects;
 
-public record Email
+public sealed class Email : ValueObject
 {
     private const string Field = "Email";
     private const int MaxLength = 254;
     private const string Pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
 
-    public Email(string value)
+    private Email()
     {
-        if (string.IsNullOrWhiteSpace(value) || !value.Contains("@"))
-        {
-            throw new ArgumentException("არასწორი იმეილის ფორმატი");
-        }
-
-        Value = value;
     }
 
-    public string Value { get; init; }
+    private Email(string value) => Value = value;
+
+    public string Value { get; }
 
     public static Result<Email> Create(string? value)
     {
@@ -34,4 +31,11 @@ public record Email
             .Bind(() => Guard.AgainstRegex(normalized, Pattern, ErrorResults.InvalidFormat(Field)))
             .Bind(() => Result<Email>.Success(new Email(normalized)));
     }
+
+    protected override IEnumerable<object?> GetEqualityComponents()
+    {
+        yield return Value;
+    }
+
+    public override string ToString() => Value;
 }

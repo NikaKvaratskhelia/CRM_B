@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0"/>
         <PackageReference Include="Hangfire" Version="1.8.23"/>
         <PackageReference Include="HotChocolate.AspNetCore" Version="16.4.0-p.14"/>
         <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="16.4.0-p.14"/>
