@@ -36,4 +36,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+        <EmbeddedResource Include="Email\Templates\**\*.cshtml"/>
+    </ItemGroup>
+
 </Project>

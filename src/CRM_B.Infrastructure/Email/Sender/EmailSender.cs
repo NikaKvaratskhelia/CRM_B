@@ -68,7 +68,6 @@ public sealed class EmailSender(
     {
         var suffix = CultureResolver.ToCultureName(language);
         var cacheKey = $"{template}|{suffix}";
-
         if (TemplateCache.TryGetValue(cacheKey, out var cached))
             return cached;
 

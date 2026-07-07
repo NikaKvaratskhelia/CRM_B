@@ -8,12 +8,10 @@ internal static class CommandMarker<TRequest>
 
     private static bool Detect()
     {
-        if (typeof(ICommand<>).IsAssignableFrom(typeof(TRequest))) return true;
-
+        if (typeof(ICommand).IsAssignableFrom(typeof(TRequest))) return true;
         foreach (var i in typeof(TRequest).GetInterfaces())
             if (i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICommand<>))
                 return true;
-
         return false;
     }
 }
